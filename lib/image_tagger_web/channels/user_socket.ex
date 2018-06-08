@@ -2,7 +2,7 @@ defmodule ImageTaggerWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", ImageTaggerWeb.RoomChannel
+  channel "room:*", ImageTaggerWeb.UserChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
