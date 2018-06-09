@@ -1,5 +1,7 @@
 <div id="body">
   <img id="image" src="https://streetcarsgame.com/wp-content/uploads/2018/05/ikke-retina-2.png"/>
+
   <button id="good" type="button">Good</input>
   <button id="bad" type="button">Bad</input>
+    <input type="checkbox" id="auto_poll" checked>auto poll<br>
 </div>

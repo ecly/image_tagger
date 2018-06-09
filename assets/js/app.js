@@ -41,20 +41,22 @@ class App {
 
     var chan = socket.channel(`room:${user_token}`, {})
     chan.join()
-      .receive( "error", () => console.log("Failed to connect") )
-      .receive( "ok",    () => console.log("Connected") )
-
+      .receive( "error", () => console.log("Failed to connect"))
+      .receive( "ok",    () => console.log("Connected"))
     chan.onError(e => console.log("Something went wrong", e))
     chan.onClose(e => console.log("Channel closed", e))
 
+    chan.on("new_image", msg => {
+      $image.attr("src", msg["url"]);
+    })
+
     var good_button_click = function() {
-      $image.attr("src","https://streetcarsgame.com/wp-content/uploads/2018/05/logo-temp_small.png");
+      chan.push("submit_review", {review:"good"})
     }
 
     var bad_button_click = function() {
-      $image.attr("src","https://streetcarsgame.com/wp-content/uploads/2018/05/ikke-retina-2.png");
+      chan.push("submit_review", {review:"bad"})
     }
-
 
     $(document).keydown(function(e) {
       if (e.keyCode == 38) { //upwards arrow click
@@ -73,9 +75,7 @@ class App {
       bad_button_click();
     });
 
-    chan.on("new:img", url => {
-      $image.attr("src",url);
-    })
+    chan.push("poll_image", "filler_msg")
   }
 }
 
