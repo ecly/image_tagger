@@ -18,6 +18,10 @@ defmodule ImageTagger do
     ReviewServer.review_image(reviewer, review)
   end
 
+  def images_left() do
+    ImageServer.get_count()
+  end
+
   # Generate a public URL for an image
   defp get_public_url(image) do
     config = ExAws.Config.new(:s3)

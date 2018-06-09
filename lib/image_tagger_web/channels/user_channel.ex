@@ -12,7 +12,8 @@ defmodule ImageTaggerWeb.UserChannel do
   def handle_in("poll_image", _msg, socket) do
     case ImageTagger.fetch_image_to_review(socket.assigns.id) do
       {:ok, url} ->
-        push(socket, @new_image_event, %{"url" => url})
+        count = ImageTagger.images_left()
+        push(socket, @new_image_event, %{"url" => url, "count" => count})
         {:noreply, socket}
       _otherwise -> {:noreply, socket}
     end

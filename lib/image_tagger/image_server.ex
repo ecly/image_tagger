@@ -56,6 +56,25 @@ defmodule ImageTagger.ImageServer do
   end
 
   @doc """
+  Returns the size of the state.
+  """
+  def handle_call({:get_count}, _from, state) do
+    {:reply, MapSet.size(state), state}
+  end
+
+  @doc """
+  Retrieves the current amount of images in the ImageServer.
+
+  ## Examples
+
+  iex> ImageTagger.ImageServer.get_count()
+  5
+  """
+  def get_count() do
+    GenServer.call(__MODULE__, {:get_count})
+  end
+
+  @doc """
   Retrieves the next image to review from the server.
   The image is removed from the ImageServer.
   Returned as an error tuple.

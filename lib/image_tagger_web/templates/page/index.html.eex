@@ -1,7 +1,25 @@
 <div id="body">
-  <img id="image" src="https://streetcarsgame.com/wp-content/uploads/2018/05/ikke-retina-2.png"/>
+  <center>
+    <img id="image" src=""/ height="600">
+    </br>
+    <hr>
+    <input type="image" id="bad" src="images/bad_button.jpg" height="100" >
+    <input type="image" id="good" src="images/good_button.jpg" height="100"><br>
+  </center>
 
-  <button id="good" type="button">Good</input>
-  <button id="bad" type="button">Bad</input>
-    <input type="checkbox" id="auto_poll" checked>auto poll<br>
+
+  <div style="position:fixed;bottom:0px;right:0px;">
+    <button type="button" id="force">force refresh</button>
+    <input type="checkbox" id="auto_poll" checked>auto poll
+  </div>
+
+  <div style="position:fixed;bottom:0px;left:0px;">
+    <label for="image_count">Images left to review:</label>
+    <b><span id="counter">0</span></b>
+  </div>
+
+  <div style="position:fixed;top:0px;left:0px;">
+    <span>Emoji, up or h for non-cheat images</span><br>
+    <span>Hammer, down or j for cheat images</span>
+  </div>
 </div>

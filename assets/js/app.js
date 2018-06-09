@@ -31,9 +31,11 @@ class App {
     let socket = new Socket("/socket", {params: {token: user_token}})
     socket.connect()
 
-    var $image    = $("#image")
-    var $good_button  = $("#good")
-    var $bad_button  = $("#bad")
+    var $image = $("#image")
+    var $good_button = $("#good")
+    var $bad_button = $("#bad")
+    var $force_button = $("#force")
+    var $count = $("#counter")
 
     socket.onOpen( ev => console.log("SOCKET OPEN", ev) )
     socket.onError( ev => console.log("SOCKET ERROR", ev) )
@@ -48,32 +50,30 @@ class App {
 
     chan.on("new_image", msg => {
       $image.attr("src", msg["url"]);
-    })
+      $count.html(msg["count"]);
+    });
 
-    var good_button_click = function() {
-      chan.push("submit_review", {review:"good"})
+    var review = function(rating) {
+      chan.push("submit_review", {review:rating})
+      if ($('#auto_poll').is(":checked")) {
+        chan.push("poll_image", "filler_msg")
+      }
     }
+    var good_button_click = function() { review("good"); }
+    var bad_button_click = function() { review("bad"); }
 
-    var bad_button_click = function() {
-      chan.push("submit_review", {review:"bad"})
-    }
 
     $(document).keydown(function(e) {
-      if (e.keyCode == 38) { //upwards arrow click
+      if (e.keyCode == 38 || e.keyCode == 75) { //up arrow or h
         good_button_click();
-        // chan.push("new:msg", {image: $image.attr("src"), rating: "good"})
-      } else if (e.keyCode == 40) { //downwards arrow click
+      } else if (e.keyCode == 40 || e.keyCode == 74) { // down arrow or j
         bad_button_click();
       }
     })
 
-    $good_button.click(function() {
-      good_button_click();
-    });
-
-    $bad_button.click(function() {
-      bad_button_click();
-    });
+    $good_button.click(function() { good_button_click(); });
+    $bad_button.click(function() { bad_button_click(); });
+    $force_button.click(function() { chan.push("poll_image", "filler_msg") });
 
     chan.push("poll_image", "filler_msg")
   }

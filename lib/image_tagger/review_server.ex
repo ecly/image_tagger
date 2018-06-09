@@ -35,10 +35,13 @@ defmodule ImageTagger.ReviewServer do
     {:reply, :ok, Map.put(state, reviewer, image)}
   end
 
+  # Moves the given image from src into the given folder.
   defp move_image_to_folder(image_src, folder) do
     bucket = Application.fetch_env!(:image_tagger, :bucket_name)
-    ExAws.S3.put_object_copy(bucket, folder, bucket, image_src) |> ExAws.request() |> IO.inspect
-    ExAws.S3.delete_object(bucket, image_src) |> ExAws.request() |> IO.inspect
+    name = Path.basename(image_src)
+    image_dst = Path.join(folder, name)
+    ExAws.S3.put_object_copy(bucket, image_dst, bucket, image_src) |> ExAws.request()
+    ExAws.S3.delete_object(bucket, image_src) |> ExAws.request()
   end
 
   @doc """
@@ -68,8 +71,10 @@ defmodule ImageTagger.ReviewServer do
   Returns: :ok
   """
   def handle_call({:review_image, reviewer, review}, _from, state) do
-    image = state[reviewer]
-    archive_image(image, review)
+    if Map.has_key?(state, reviewer) do
+      image = state[reviewer]
+      archive_image(image, review)
+    end
     {:reply, :ok, Map.delete(state, image)}
   end
 
