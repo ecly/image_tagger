@@ -14,7 +14,7 @@
 
     <div class="container">
       <center>
-      <h1>lethy9 deluxe anti cheat system</h1>
+      <h1>Lethly's Deluxe Anti-Cheat System</h1>
       </center>
       <hr>
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
