@@ -16,6 +16,8 @@ config :ex_aws,
   access_key_id: [{:system, ""}, :instance_role],
   secret_access_key: [{:system, ""}, :instance_role]
 
-config :image_tagger, image_bucket: "****-****-*****-*****"
-config :image_tagger, bad_bucket: "****-****-*****-*****"
-config :image_tagger, good_bucket: "****-****-*****-*****"
+config :image_tagger, update_interval_seconds: 1
+config :image_tagger, bucket_name: "bucket"
+config :image_tagger, image_folder: "to_review"
+config :image_tagger, bad_folder: "bad"
+config :image_tagger, good_folder: "good"

@@ -26,15 +26,6 @@ defmodule ImageTagger.ReviewServer do
     {:ok, %{}}
   end
 
-  @doc """
-  Adds an image to the ReviewServer signifying that it
-  is currently being reviewed.
-  Returns :ok
-  """
-  def handle_call({:add_image, reviewer, image}, _from, state) do
-    {:reply, :ok, Map.put(state, reviewer, image)}
-  end
-
   # Moves the given image from src into the given folder.
   defp move_image_to_folder(image_src, folder) do
     bucket = Application.fetch_env!(:image_tagger, :bucket_name)
@@ -61,6 +52,15 @@ defmodule ImageTagger.ReviewServer do
   end
 
   @doc """
+  Adds an image to the ReviewServer signifying that it
+  is currently being reviewed.
+  Returns :ok
+  """
+  def handle_call({:add_image, reviewer, image}, _from, state) do
+    {:reply, :ok, Map.put(state, reviewer, image)}
+  end
+
+  @doc """
   Adds a review for an image, causing it to be removed
   from the ReviewServer and moved to the appropriate folder
   based on the review.
@@ -71,12 +71,75 @@ defmodule ImageTagger.ReviewServer do
   Returns: :ok
   """
   def handle_call({:review_image, reviewer, review}, _from, state) do
+    IO.inspect(state, label: "review server state")
     if Map.has_key?(state, reviewer) do
       image = state[reviewer]
       archive_image(image, review)
     end
     {:reply, :ok, Map.delete(state, image)}
   end
+
+  @doc """
+  Returns the size of the state.
+  """
+  def handle_call(:get_count, _from, state) do
+    IO.inspect(map_size(state), label: "review server count")
+    {:reply, map_size(state), state}
+  end
+
+  @doc """
+  Returns the size of the state.
+  """
+  def handle_call(:get_images, _from, state) do
+    IO.inspect(state, label: "review server state")
+    {:reply, Map.keys(state), state}
+  end
+
+  @doc """
+  Removes the given reviewer from the state.
+  """
+  def handle_cast({:remove_reviewer, id}, state) do
+    IO.inspect(id, label: "removing reviewer from state")
+    {:noreply, Map.delete(state, id)}
+  end
+
+  @doc """
+  Retrieves the current amount of images in the ImageServer.
+
+  ## Examples
+
+  iex> ImageTagger.ReviewServer.get_count()
+  5
+  """
+  def get_count() do
+    GenServer.call(__MODULE__, :get_count)
+  end
+
+  @doc """
+  Retrieves all the keys from the state,
+  meaning all the keys for the images associated
+  with all the active reviewers.
+
+  ## Examples
+
+  iex> ImageTagger.ReviewServer.get_count()
+  5
+  """
+  def get_images() do
+    GenServer.call(__MODULE__, :get_images)
+  end
+
+  @doc """
+  Removes the reviewer associated with the given id from the state.
+
+  ## Examples
+
+  iex> ImageTagger.ReviewServer.remove_reviewer("reviewer_id")
+  """
+  def remove_reviewer(id) do
+    GenServer.cast(__MODULE__, {:remove_reviewer, id})
+  end
+
 
   @doc """
   Adds a review for an image.

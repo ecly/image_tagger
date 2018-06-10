@@ -14,8 +14,14 @@
   </div>
 
   <div style="position:fixed;bottom:0px;left:0px;">
-    <label for="image_count">Images left to review:</label>
-    <b><span id="counter">0</span></b>
+    <label style="font-weight:normal;" for="online">Reviewers online:</label>
+    <b><span id="online">1</span></b><br>
+
+    <label style="font-weight:normal;" for="reviewed_count">Images reviewed this session:</label>
+    <b><span id="reviewed_count">0</span><b><br>
+
+    <label style="font-weight:normal;" for="images_left">Images left to review:</label>
+    <b><span id="images_left">0</span></b>
   </div>
 
   <div style="position:fixed;top:0px;left:0px;">

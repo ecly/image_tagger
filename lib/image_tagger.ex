@@ -18,8 +18,29 @@ defmodule ImageTagger do
     ReviewServer.review_image(reviewer, review)
   end
 
+  @doc """
+  Returns the current amount of images in the ImageServer
+
+  ## Examples
+  iex> ImageTagger.images_left()
+  100
+  """
   def images_left() do
     ImageServer.get_count()
+  end
+
+  @doc """
+  A slightly hacky way to get the amount
+  of people currently review, by getting the size
+  of the ReviewServer's state.
+
+  ## Examples
+  iex> ImageTagger.reviewers_online()
+  5
+
+  """
+  def reviewers_online() do
+    ReviewServer.get_count()
   end
 
   # Generate a public URL for an image

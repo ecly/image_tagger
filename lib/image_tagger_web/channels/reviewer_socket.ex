@@ -1,8 +1,8 @@
-defmodule ImageTaggerWeb.UserSocket do
+defmodule ImageTaggerWeb.ReviewerSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "room:*", ImageTaggerWeb.UserChannel
+  channel "reviewers:*", ImageTaggerWeb.ReviewerChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

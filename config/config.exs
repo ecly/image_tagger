@@ -10,7 +10,7 @@ config :image_tagger, ImageTaggerWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "5islEDjejZNuIN1fE+KZ6YFzqq/9Rsg7p4AFOx4YI9vlyl4NK9mxaoiIpwBWb4UI",
   render_errors: [view: ImageTaggerWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: ImageTagger.PubSub,
+  pubsub: [name: ImageTaggerWeb.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger

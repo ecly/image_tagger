@@ -1,7 +1,7 @@
 defmodule ImageTaggerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :image_tagger
 
-  socket "/socket", ImageTaggerWeb.UserSocket
+  socket "/socket", ImageTaggerWeb.ReviewerSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -38,6 +38,7 @@ defmodule ImageTaggerWeb.Endpoint do
     key: "_image_tagger_key",
     signing_salt: "4wwFq6SL"
 
+  plug(CORSPlug)
   plug ImageTaggerWeb.Router
 
   @doc """

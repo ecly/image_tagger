@@ -5,7 +5,7 @@ defmodule ImageTagger.Mixfile do
     [
       app: :image_tagger,
       version: "0.0.1",
-      elixir: "~> 1.4",
+      elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
@@ -41,6 +41,7 @@ defmodule ImageTagger.Mixfile do
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.9"},
+      {:cors_plug, "~> 1.3"},
       {:sweet_xml, "~> 0.6"}
     ]
   end

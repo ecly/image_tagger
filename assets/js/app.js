@@ -35,28 +35,37 @@ class App {
     var $good_button = $("#good")
     var $bad_button = $("#bad")
     var $force_button = $("#force")
-    var $count = $("#counter")
+    var $images_left = $("#images_left")
+    var $reviewed_count = $("#reviewed_count")
+    var $online = $("#online")
 
     socket.onOpen( ev => console.log("SOCKET OPEN", ev) )
     socket.onError( ev => console.log("SOCKET ERROR", ev) )
     socket.onClose( e => console.log("SOCKET CLOSE", e))
 
-    var chan = socket.channel(`room:${user_token}`, {})
+    var chan = socket.channel(`reviewers:${user_token}`, {})
     chan.join()
       .receive( "error", () => console.log("Failed to connect"))
       .receive( "ok",    () => console.log("Connected"))
-    chan.onError(e => console.log("Something went wrong", e))
-    chan.onClose(e => console.log("Channel closed", e))
+    chan.onError(e => console.log("Something went wrong", e));
+    chan.onClose(e => console.log("Channel closed", e));
 
     chan.on("new_image", msg => {
       $image.attr("src", msg["url"]);
-      $count.html(msg["count"]);
+      $images_left.text(msg["count"]);
+      $online.text(msg["online"]);
     });
 
+    var increment_reviewed = function() {
+      var value = parseInt($reviewed_count.text(), 10) + 1;
+      $reviewed_count.text(value);
+    }
+
     var review = function(rating) {
-      chan.push("submit_review", {review:rating})
+      chan.push("submit_review", {review:rating});
+      increment_reviewed();
       if ($('#auto_poll').is(":checked")) {
-        chan.push("poll_image", "filler_msg")
+        chan.push("poll_image", "filler_msg");
       }
     }
     var good_button_click = function() { review("good"); }

@@ -12,6 +12,8 @@ defmodule ImageTagger.Application do
     children = [
       # Start the endpoint when the application starts
       supervisor(ImageTaggerWeb.Endpoint, []),
+      supervisor(ImageTaggerWeb.Presence.Supervisor, []),
+      supervisor(ImageTaggerWeb.Presence, []),
       worker(ImageServer, []),
       worker(ReviewServer, [])
       # Start your own worker by calling: ImageTagger.Worker.start_link(arg1, arg2, arg3)

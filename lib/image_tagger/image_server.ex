@@ -2,8 +2,13 @@ defmodule ImageTagger.ImageServer do
   @moduledoc """
   Server keeping track of all the images
   that are yet to be reviewed.
+
+  The servers updates the state once every
+    `Application.fetch_env!(:image_tagger, :update_interval_seconds)
+  seconds.
   """
   alias ExAws
+  alias ImageTagger.ReviewServer
   use GenServer
 
   @doc """
@@ -19,6 +24,26 @@ defmodule ImageTagger.ImageServer do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
+  @doc false
+  def init(:ok) do
+    images = fetch_images()
+    schedule_update()
+    {:ok, MapSet.new(images)}
+  end
+
+  @doc """
+  Sends an update message to the ImageServer after
+  the configured amount of seconds.
+  """
+  def schedule_update() do
+    seconds = 1000 * Application.fetch_env!(:image_tagger, :update_interval_seconds)
+    Process.send_after(self(), :update_state, seconds)
+  end
+
+  @doc """
+  Fetches the keys of all the images currently in the review folder,
+  meaning all images that are yet to be reviewed.
+  """
   def fetch_images() do
     bucket_name = Application.fetch_env!(:image_tagger, :bucket_name)
     image_folder = Application.fetch_env!(:image_tagger, :image_folder)
@@ -35,17 +60,37 @@ defmodule ImageTagger.ImageServer do
     |> Enum.map(&(&1.key))
   end
 
-  @doc false
-  def init(:ok) do
+  @doc """
+  Get all the images that are currently in the review folder,
+  and subtracts all the images that are currently being reviewed by the
+  ReviewServer.
+  """
+  def fetch_new_state() do
     images = fetch_images()
-    {:ok, MapSet.new(images)}
+    under_review = ReviewServer.get_images()
+    MapSet.difference(MapSet.new(images), MapSet.new(under_review))
   end
+
+  @doc """
+  Updates the state of the ImageServer by querying S3 for images
+  in the review folder and subtracting the images that are currently
+  being reviewed.
+
+  Additionally schedules a new update after the configured amount of seconds.
+  """
+  def handle_info(:update_state, _state) do
+    # IO.inspect(_state, label: "image server state")
+    updated_state = fetch_new_state()
+    schedule_update()
+    {:noreply, updated_state}
+  end
+
 
   @doc """
   Attemps to retrieve an image for review from the ImageServer
   Returns: {:ok, image} || {:error, reason}
   """
-  def handle_call({:poll_image}, _from, state) do
+  def handle_call(:poll_image, _from, state) do
     if MapSet.size(state) > 0 do
       image = Enum.at(state, 0)
       new_state = MapSet.delete(state, image)
@@ -58,7 +103,7 @@ defmodule ImageTagger.ImageServer do
   @doc """
   Returns the size of the state.
   """
-  def handle_call({:get_count}, _from, state) do
+  def handle_call(:get_count, _from, state) do
     {:reply, MapSet.size(state), state}
   end
 
@@ -71,7 +116,7 @@ defmodule ImageTagger.ImageServer do
   5
   """
   def get_count() do
-    GenServer.call(__MODULE__, {:get_count})
+    GenServer.call(__MODULE__, :get_count)
   end
 
   @doc """
@@ -87,6 +132,6 @@ defmodule ImageTagger.ImageServer do
   {:error, "No more images to review at the moment"}
   """
   def poll_image() do
-    GenServer.call(__MODULE__, {:poll_image})
+    GenServer.call(__MODULE__, :poll_image)
   end
 end
