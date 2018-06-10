@@ -31,8 +31,8 @@ defmodule ImageTagger.ReviewServer do
     bucket = Application.fetch_env!(:image_tagger, :bucket_name)
     name = Path.basename(image_src)
     image_dst = Path.join(folder, name)
-    ExAws.S3.put_object_copy(bucket, image_dst, bucket, image_src) |> ExAws.request()
-    ExAws.S3.delete_object(bucket, image_src) |> ExAws.request()
+    bucket |> ExAws.S3.put_object_copy(image_dst, bucket, image_src) |> ExAws.request()
+    bucket |> ExAws.S3.delete_object(image_src) |> ExAws.request()
   end
 
   @doc """
@@ -71,7 +71,6 @@ defmodule ImageTagger.ReviewServer do
   Returns: :ok
   """
   def handle_call({:review_image, reviewer, review}, _from, state) do
-    IO.inspect(state, label: "review server state")
     if Map.has_key?(state, reviewer) do
       image = state[reviewer]
       archive_image(image, review)
@@ -83,7 +82,6 @@ defmodule ImageTagger.ReviewServer do
   Returns the size of the state.
   """
   def handle_call(:get_count, _from, state) do
-    IO.inspect(map_size(state), label: "review server count")
     {:reply, map_size(state), state}
   end
 
@@ -91,7 +89,6 @@ defmodule ImageTagger.ReviewServer do
   Returns the size of the state.
   """
   def handle_call(:get_images, _from, state) do
-    IO.inspect(state, label: "review server state")
     {:reply, Map.keys(state), state}
   end
 
@@ -99,7 +96,6 @@ defmodule ImageTagger.ReviewServer do
   Removes the given reviewer from the state.
   """
   def handle_cast({:remove_reviewer, id}, state) do
-    IO.inspect(id, label: "removing reviewer from state")
     {:noreply, Map.delete(state, id)}
   end
 

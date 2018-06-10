@@ -1,4 +1,5 @@
 defmodule ImageTaggerWeb.ReviewerChannel do
+  @moduledoc false
   alias ImageTagger
   alias ImageTaggerWeb.Presence
   alias ImageTaggerWeb.Presence.LeaveTracker
@@ -34,7 +35,6 @@ defmodule ImageTaggerWeb.ReviewerChannel do
         count = ImageTagger.images_left()
         online = ImageTagger.reviewers_online()
         response = %{"url" => url, "count" => count, "online" => online}
-        IO.inspect(response)
         push(socket, @new_image_event, response)
         {:noreply, socket}
       _otherwise -> {:noreply, socket}

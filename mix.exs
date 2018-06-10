@@ -42,7 +42,8 @@ defmodule ImageTagger.Mixfile do
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.9"},
       {:cors_plug, "~> 1.3"},
-      {:sweet_xml, "~> 0.6"}
+      {:sweet_xml, "~> 0.6"},
+      {:credo, "~> 0.8.10", only: [:dev, :test], runtime: false}
     ]
   end
 end

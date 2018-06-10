@@ -1,4 +1,5 @@
 defmodule ImageTagger.Application do
+  @moduledoc false
   alias ImageTagger.ImageServer
   alias ImageTagger.ReviewServer
   use Application
