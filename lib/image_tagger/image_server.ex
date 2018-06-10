@@ -108,6 +108,13 @@ defmodule ImageTagger.ImageServer do
   end
 
   @doc """
+  Returns the size of the state.
+  """
+  def handle_call({:add_image, image}, _from, state) do
+    {:reply, :ok, MapSet.put(state, image)}
+  end
+
+  @doc """
   Retrieves the current amount of images in the ImageServer.
 
   ## Examples
@@ -117,6 +124,22 @@ defmodule ImageTagger.ImageServer do
   """
   def get_count() do
     GenServer.call(__MODULE__, :get_count)
+  end
+
+  @doc """
+  Adds an image to the ImageServer.
+  This can be used by ReviewServer if an image
+  is removed without being reviewed. It is however
+  not necessary to do so, as the image will stay in the folder
+  and be re-added by the next update_state(), but this makes
+  the count update more quickly
+
+  ## Examples
+
+  iex> ImageTagger.ImageServer.add_image("to_review/image.png")
+  """
+  def add_image(image) do
+    GenServer.call(__MODULE__, {:add_image, image})
   end
 
   @doc """

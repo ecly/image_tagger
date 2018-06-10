@@ -7,21 +7,20 @@
     <input type="image" id="good" src="images/good_button.jpg" height="100"><br>
   </center>
 
-
-
   <div style="position:fixed;top:5px;left:5px;">
     <input type="image" id="good" src="images/judge.jpg" height="250"><br>
   </div>
 
   <div style="position:fixed;top:5px;right:5px;">
     <span>Emoji, up or h for non-cheat images</span><br>
-    <span>Hammer, down or j for cheat images</span>
+    <span>Hammer, down or j for cheat images</span><br>
+    <span>Next-button or n for next image</span><br>
   </div>
 
   <div style="position:fixed;bottom:5px;right:5px;">
-    <button type="button" id="force">refresh</button>
+    <button type="button" id="force">Next</button>
     <label style="font-weight:normal;" for="auto_poll">auto next:</label>
-    <input type="checkbox" id="auto_poll" checked></input>
+    <input type="checkbox" id="auto_next" checked></input>
   </div>
 
   <div style="position:fixed;bottom:5px;left:5px;">

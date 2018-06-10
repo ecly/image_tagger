@@ -64,27 +64,31 @@ class App {
     var review = function(rating) {
       chan.push("submit_review", {review:rating});
       increment_reviewed();
-      if ($('#auto_poll').is(":checked")) {
+      if ($('#auto_next').is(":checked")) {
         chan.push("poll_image", "filler_msg");
       }
     }
-    var good_button_click = function() { review("good"); }
-    var bad_button_click = function() { review("bad"); }
 
+    var poll_image= function() {
+      chan.push("poll_image", "filler_msg")
+    }
 
     $(document).keydown(function(e) {
+      console.log(e.keyCode)
       if (e.keyCode == 38 || e.keyCode == 75) { //up arrow or h
-        good_button_click();
+        review("good");
       } else if (e.keyCode == 40 || e.keyCode == 74) { // down arrow or j
-        bad_button_click();
+        review("bad");
+      } else if (e.keyCode == 78) { // n
+        poll_image();
       }
     })
 
-    $good_button.click(function() { good_button_click(); });
-    $bad_button.click(function() { bad_button_click(); });
-    $force_button.click(function() { chan.push("poll_image", "filler_msg") });
+    $good_button.click(function() { review("good"); });
+    $bad_button.click(function() { review("bad"); });
+    $force_button.click(function() { poll_image(); });
 
-    chan.push("poll_image", "filler_msg")
+    poll_image();
   }
 }
 

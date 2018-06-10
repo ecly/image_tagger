@@ -61,6 +61,7 @@ defmodule ImageTagger do
   def fetch_image_to_review(reviewer) do
     case ImageServer.poll_image() do
       {:ok, image} ->
+        IO.inspect(image)
         :ok = ReviewServer.add_image(reviewer, image)
         get_public_url(image)
 

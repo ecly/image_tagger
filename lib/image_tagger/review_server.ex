@@ -90,7 +90,7 @@ defmodule ImageTagger.ReviewServer do
   Returns the size of the state.
   """
   def handle_call(:get_images, _from, state) do
-    {:reply, Map.keys(state), state}
+    {:reply, Map.values(state), state}
   end
 
   @doc """
@@ -155,7 +155,8 @@ defmodule ImageTagger.ReviewServer do
 
   @doc """
   Associates a reviewer with an image.
-  currently being reviewed.
+  currently being reviewed. If the reviewer is currently
+  not reviewing anything, nothing is done.
 
   ## Examples
 
