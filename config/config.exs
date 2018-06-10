@@ -10,8 +10,7 @@ config :image_tagger, ImageTaggerWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "5islEDjejZNuIN1fE+KZ6YFzqq/9Rsg7p4AFOx4YI9vlyl4NK9mxaoiIpwBWb4UI",
   render_errors: [view: ImageTaggerWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: ImageTaggerWeb.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: ImageTaggerWeb.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -20,4 +19,4 @@ config :logger, :console,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

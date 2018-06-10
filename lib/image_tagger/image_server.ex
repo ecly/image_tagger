@@ -47,17 +47,18 @@ defmodule ImageTagger.ImageServer do
   def fetch_images() do
     bucket_name = Application.fetch_env!(:image_tagger, :bucket_name)
     image_folder = Application.fetch_env!(:image_tagger, :image_folder)
+
     {:ok, res} =
       bucket_name
       |> ExAws.S3.list_objects(prefix: image_folder)
-      |> ExAws.request
+      |> ExAws.request()
 
     # filter out folders and return a list of the keys
     res
     |> Map.get(:body)
     |> Map.get(:contents)
     |> Enum.filter(&(&1.size != "0"))
-    |> Enum.map(&(&1.key))
+    |> Enum.map(& &1.key)
   end
 
   @doc """
@@ -84,7 +85,6 @@ defmodule ImageTagger.ImageServer do
     schedule_update()
     {:noreply, updated_state}
   end
-
 
   @doc """
   Attemps to retrieve an image for review from the ImageServer

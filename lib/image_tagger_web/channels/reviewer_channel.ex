@@ -37,7 +37,9 @@ defmodule ImageTaggerWeb.ReviewerChannel do
         response = %{"url" => url, "count" => count, "online" => online}
         push(socket, @new_image_event, response)
         {:noreply, socket}
-      _otherwise -> {:noreply, socket}
+
+      _otherwise ->
+        {:noreply, socket}
     end
   end
 

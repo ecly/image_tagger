@@ -63,7 +63,9 @@ defmodule ImageTagger do
       {:ok, image} ->
         :ok = ReviewServer.add_image(reviewer, image)
         get_public_url(image)
-      {:error, reason} -> {:error, reason}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 end

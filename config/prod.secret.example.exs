@@ -8,8 +8,7 @@ use Mix.Config
 # file or create a script for recreating it, since it's
 # kept out of version control and might be hard to recover
 # or recreate for your teammates (or yourself later on).
-config :image_tagger, ImageTaggerWeb.Endpoint,
-  secret_key_base: ""
+config :image_tagger, ImageTaggerWeb.Endpoint, secret_key_base: ""
 
 config :ex_aws,
   s3: [region: "eu-west-2", scheme: "https://"],

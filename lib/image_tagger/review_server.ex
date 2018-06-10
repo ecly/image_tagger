@@ -75,6 +75,7 @@ defmodule ImageTagger.ReviewServer do
       image = state[reviewer]
       archive_image(image, review)
     end
+
     {:reply, :ok, Map.delete(state, image)}
   end
 
@@ -136,7 +137,6 @@ defmodule ImageTagger.ReviewServer do
     GenServer.cast(__MODULE__, {:remove_reviewer, id})
   end
 
-
   @doc """
   Adds a review for an image.
   The image is removed from the ReviewServer and moved to
@@ -152,7 +152,6 @@ defmodule ImageTagger.ReviewServer do
   def review_image(reviewer, review) do
     GenServer.call(__MODULE__, {:review_image, reviewer, review})
   end
-
 
   @doc """
   Associates a reviewer with an image.
