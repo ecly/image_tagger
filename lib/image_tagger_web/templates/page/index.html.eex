@@ -8,24 +8,29 @@
   </center>
 
 
-  <div style="position:fixed;bottom:0px;right:0px;">
-    <button type="button" id="force">force refresh</button>
-    <input type="checkbox" id="auto_poll" checked>auto poll
+
+  <div style="position:fixed;top:5px;left:5px;">
+    <input type="image" id="good" src="images/judge.jpg" height="250"><br>
   </div>
 
-  <div style="position:fixed;bottom:0px;left:0px;">
+  <div style="position:fixed;top:5px;right:5px;">
+    <span>Emoji, up or h for non-cheat images</span><br>
+    <span>Hammer, down or j for cheat images</span>
+  </div>
+
+  <div style="position:fixed;bottom:5px;right:5px;">
+    <button type="button" id="force">refresh</button>
+    <label style="font-weight:normal;" for="auto_poll">auto next:</label>
+    <input type="checkbox" id="auto_poll" checked></input>
+  </div>
+
+  <div style="position:fixed;bottom:5px;left:5px;">
     <label style="font-weight:normal;" for="online">Reviewers online:</label>
     <b><span id="online">1</span></b><br>
-
     <label style="font-weight:normal;" for="reviewed_count">Images reviewed this session:</label>
     <b><span id="reviewed_count">0</span><b><br>
-
     <label style="font-weight:normal;" for="images_left">Images left to review:</label>
     <b><span id="images_left">0</span></b>
   </div>
 
-  <div style="position:fixed;top:0px;left:0px;">
-    <span>Emoji, up or h for non-cheat images</span><br>
-    <span>Hammer, down or j for cheat images</span>
-  </div>
 </div>
