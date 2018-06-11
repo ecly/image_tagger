@@ -74,9 +74,10 @@ defmodule ImageTagger.ReviewServer do
     if Map.has_key?(state, reviewer) do
       image = state[reviewer]
       archive_image(image, review)
+      {:reply, :ok, Map.delete(state, image)}
+    else
+      {:reply, :ok, state}
     end
-
-    {:reply, :ok, Map.delete(state, image)}
   end
 
   @doc """
