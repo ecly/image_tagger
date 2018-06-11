@@ -12,8 +12,8 @@ config :image_tagger, ImageTaggerWeb.Endpoint, secret_key_base: ""
 
 config :ex_aws,
   s3: [region: "eu-west-2", scheme: "https://"],
-  access_key_id: [{:system, ""}, :instance_role],
-  secret_access_key: [{:system, ""}, :instance_role]
+  access_key_id: ["", :instance_role],
+  secret_access_key: ["", :instance_role]
 
 config :image_tagger, update_interval_seconds: 1
 config :image_tagger, bucket_name: "bucket"
