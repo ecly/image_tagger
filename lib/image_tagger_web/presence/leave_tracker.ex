@@ -8,7 +8,6 @@ defmodule ImageTaggerWeb.Presence.LeaveTracker do
   require Logger
   alias ImageTagger.ReviewServer
   alias ImageTaggerWeb.Endpoint
-  alias ImageTaggerWeb.ReviewChannel
   alias Phoenix.Socket.Broadcast
 
   @doc """

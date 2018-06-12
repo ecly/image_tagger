@@ -32,12 +32,17 @@ class App {
     socket.connect()
 
     var $image = $("#image")
+    var $overlay = $("#overlay_image")
     var $good_button = $("#good")
     var $bad_button = $("#bad")
     var $force_button = $("#force")
     var $images_left = $("#images_left")
     var $reviewed_count = $("#reviewed_count")
     var $online = $("#online")
+    var $overlay = $("#overlay")
+    var $overlay_image = $("#overlay_image")
+    var good_overlay_image = "images/good_overlay.png"
+    var bad_overlay_image = "images/banned_overlay.png"
 
     socket.onOpen( ev => console.log("SOCKET OPEN", ev) )
     socket.onError( ev => console.log("SOCKET ERROR", ev) )
@@ -84,8 +89,29 @@ class App {
       }
     })
 
-    $good_button.click(function() { review("good"); });
-    $bad_button.click(function() { review("bad"); });
+    var hide_overlay = function() {
+      $overlay.hide();
+      $overlay_image.attr("src", "");
+    }
+    var show_overlay_image = function(image) {
+      $overlay_image.attr("src", image);
+      $("#overlay").show();
+      setTimeout(hide_overlay, 500);
+    }
+
+    // we also want to hide overlay when next image has loaded
+    image.addEventListener('load', hide_overlay)
+
+    $good_button.click(function() {
+      show_overlay_image(good_overlay_image);
+      review("good");
+    });
+
+    $bad_button.click(function() {
+      show_overlay_image(bad_overlay_image);
+      review("bad");
+    });
+
     $force_button.click(function() { poll_image(); });
 
     poll_image();

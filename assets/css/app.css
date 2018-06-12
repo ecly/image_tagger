@@ -3,12 +3,47 @@ h1 {
     font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
 }
 
-#good {
-    border-style: solid;
-    border-width: 1px;
+label {
+    font-weight:normal;
 }
 
-#bad {
+#buttons {
+    display: table;
+    margin: 0 auto;
+    position: relative;
+}
+
+.button {
+    height: 100px;
     border-style: solid;
     border-width: 1px;
+    margin: 10px;
+}
+
+#images {
+    display: block;
+    margin: 0 auto;
+    position: relative;
+}
+
+#image {
+    display: block;
+    margin: 0 auto;
+    height:400px;
+}
+
+#overlay {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+
+#overlay_image {
+    position:absolute;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform:translate(-50%, -50%);
 }

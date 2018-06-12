@@ -1,14 +1,20 @@
 <div id="body">
-  <center>
-    <img id="image" src=""/ height="600">
-    </br>
-    <hr>
-    <input type="image" id="bad" src="images/bad_button.jpg" height="100" >
-    <input type="image" id="good" src="images/good_button.jpg" height="100"><br>
-  </center>
+    <div id="images">
+      <img id="image" src="">
+      <div id="overlay">
+        <img id="overlay_image" src=""/>
+      </div>
+    </div>
+    </br><hr>
+    <div id="buttons">
+      <input class="button" type="image" id="bad" src="images/bad_button.jpg">
+      <input class="button" type="image" id="good" src="images/good_button.png">
+    </div>
+    <br>
 
   <div style="position:fixed;top:5px;left:5px;">
-    <input type="image" id="good" src="images/judge.jpg" height="250"><br>
+    <input type="image" id="good" src="images/judge.jpg" height="250">
+    <br>
   </div>
 
   <div style="position:fixed;top:5px;right:5px;">
@@ -19,16 +25,18 @@
 
   <div style="position:fixed;bottom:5px;right:5px;">
     <button type="button" id="force">Next</button>
-    <label style="font-weight:normal;" for="auto_poll">Auto next:</label>
+    <label for="auto_poll">Auto next:</label>
     <input type="checkbox" id="auto_next" checked></input>
   </div>
 
   <div style="position:fixed;bottom:5px;left:5px;">
-    <label style="font-weight:normal;" for="online">Reviewers online:</label>
-    <b><span id="online">1</span></b><br>
-    <label style="font-weight:normal;" for="reviewed_count">Images reviewed this session:</label>
-    <b><span id="reviewed_count">0</span><b><br>
-    <label style="font-weight:normal;" for="images_left">Images left to review:</label>
+    <label for="online">Reviewers online:</label>
+    <b><span id="online">1</span></b>
+    <br>
+    <label for="reviewed_count">Images reviewed this session:</label>
+    <b><span id="reviewed_count">0</span><b>
+    <br>
+    <label for="images_left">Images left to review:</label>
     <b><span id="images_left">0</span></b>
   </div>
 
