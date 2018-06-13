@@ -57,7 +57,11 @@ class App {
 
     chan.on("new_image", msg => {
       $image.attr("src", msg["url"]);
-      $images_left.text(msg["count"]);
+      if(msg["count"] === 999){
+        $images_left.text("999+");
+      } else {
+        $images_left.text(msg["count"]);
+      }
       $online.text(msg["online"]);
     });
 
