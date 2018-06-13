@@ -88,7 +88,7 @@ class App {
         review("good");
       } else if (e.keyCode == 40 || e.keyCode == 74) { // down arrow or j
         review("bad");
-      } else if (e.keyCode == 78) { // n
+      } else if (e.keyCode == 39 || e.keyCode == 78) { // right arrow  or n
         poll_image();
       }
     })
