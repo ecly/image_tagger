@@ -6,6 +6,7 @@ defmodule ImageTagger.ReviewServer do
   Implemented as a map of {<reviewer id> => image}
   """
   alias ExAws
+  alias ImageTagger.ImageServer
   use GenServer
 
   @doc """
@@ -53,10 +54,16 @@ defmodule ImageTagger.ReviewServer do
 
   @doc """
   Adds an image to the ReviewServer signifying that it
-  is currently being reviewed.
+  is currently being reviewed. If the Reviewer is already associated
+  with an image, that image is added back into the ImageServer.
+
   Returns :ok
   """
   def handle_call({:add_image, reviewer, image}, _from, state) do
+    if Map.has_key?(state, reviewer) do
+      :ok = ImageServer.add_image(state[reviewer])
+    end
+
     {:reply, :ok, Map.put(state, reviewer, image)}
   end
 
@@ -74,7 +81,7 @@ defmodule ImageTagger.ReviewServer do
     if Map.has_key?(state, reviewer) do
       image = state[reviewer]
       archive_image(image, review)
-      {:reply, :ok, Map.delete(state, image)}
+      {:reply, :ok, Map.delete(state, reviewer)}
     else
       {:reply, :ok, state}
     end
@@ -88,7 +95,8 @@ defmodule ImageTagger.ReviewServer do
   end
 
   @doc """
-  Returns the size of the state.
+  Returns the values of the state, meaning all the images
+  associated with the currently connected reviewers.
   """
   def handle_call(:get_images, _from, state) do
     {:reply, Map.values(state), state}
@@ -96,9 +104,15 @@ defmodule ImageTagger.ReviewServer do
 
   @doc """
   Removes the given reviewer from the state.
+  If the reviewer is associated with an image,
+  that image is added back into the ImageServer.
   """
-  def handle_cast({:remove_reviewer, id}, state) do
-    {:noreply, Map.delete(state, id)}
+  def handle_cast({:remove_reviewer, reviewer}, state) do
+    if Map.has_key?(state, reviewer) do
+      :ok = ImageServer.add_image(state[reviewer])
+    end
+
+    {:noreply, Map.delete(state, reviewer)}
   end
 
   @doc """

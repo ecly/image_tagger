@@ -25,9 +25,7 @@ defmodule ImageTagger do
   iex> ImageTagger.images_left()
   100
   """
-  def images_left() do
-    ImageServer.get_count()
-  end
+  def images_left(), do: ImageServer.get_count()
 
   @doc """
   A slightly hacky way to get the amount

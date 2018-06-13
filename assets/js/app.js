@@ -57,7 +57,7 @@ class App {
 
     chan.on("new_image", msg => {
       $image.attr("src", msg["url"]);
-      if(msg["count"] === 999){
+      if(msg["count"] >= 999){
         $images_left.text("999+");
       } else {
         $images_left.text(msg["count"]);
@@ -71,15 +71,13 @@ class App {
     }
 
     var review = function(rating) {
-      chan.push("submit_review", {review:rating});
+      var poll_next =  $('#auto_next').is(":checked")
+      chan.push("submit_review", {review:rating, auto_next:poll_next});
       increment_reviewed();
-      if ($('#auto_next').is(":checked")) {
-        chan.push("poll_image", "filler_msg");
-      }
     }
 
     var poll_image= function() {
-      chan.push("poll_image", "filler_msg")
+      chan.push("poll_image", {})
     }
 
     $(document).keydown(function(e) {

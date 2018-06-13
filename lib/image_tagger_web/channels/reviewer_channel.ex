@@ -28,15 +28,15 @@ defmodule ImageTaggerWeb.ReviewerChannel do
     {:noreply, socket}
   end
 
-  @doc false
-  def handle_in("poll_image", _msg, socket) do
+  # Pushes an image associated with the given socket if one is available
+  # in the ImageServer. Otherwise does nothing.
+  defp try_push_image_to_socket(socket) do
     case ImageTagger.fetch_image_to_review(socket.assigns.id) do
       {:ok, url} ->
         count = ImageTagger.images_left()
         online = ImageTagger.reviewers_online()
         response = %{"url" => url, "count" => count, "online" => online}
         push(socket, @new_image_event, response)
-        {:noreply, socket}
 
       _otherwise ->
         {:noreply, socket}
@@ -44,10 +44,21 @@ defmodule ImageTaggerWeb.ReviewerChannel do
   end
 
   @doc false
-  def handle_in("submit_review", %{"review" => review_string}, socket) do
-    id = socket.assigns.id
+  def handle_in("poll_image", _msg, socket) do
+    try_push_image_to_socket(socket)
+    {:noreply, socket}
+  end
+
+  @doc false
+  def handle_in("submit_review", %{"review" => review_string, "auto_next" => get_next}, socket) do
+    # expected to be either :good or :bad
     review = String.to_existing_atom(review_string)
-    ImageTagger.review_image(id, review)
+    :ok = ImageTagger.review_image(socket.assigns.id, review)
+
+    if get_next do
+      try_push_image_to_socket(socket)
+    end
+
     {:noreply, socket}
   end
 end

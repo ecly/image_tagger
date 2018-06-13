@@ -87,12 +87,14 @@ defmodule ImageTagger.ImageServer do
   end
 
   @doc """
-  Attemps to retrieve an image for review from the ImageServer
+  Attemps to retrieve a random image for review from the ImageServer.
+  Returns an error if there are no images left in the ImageServer.
+
   Returns: {:ok, image} || {:error, reason}
   """
   def handle_call(:poll_image, _from, state) do
     if MapSet.size(state) > 0 do
-      image = Enum.at(state, 0)
+      image = Enum.random(state)
       new_state = MapSet.delete(state, image)
       {:reply, {:ok, image}, new_state}
     else
