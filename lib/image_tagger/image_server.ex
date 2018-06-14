@@ -1,7 +1,14 @@
 defmodule ImageTagger.ImageServer do
   @moduledoc """
   Server keeping track of all the images
-  that are yet to be reviewed.
+  that are yet to be reviewed. It additionally keeps track
+  of whether the current images in the server are all the images.
+  This is done by checking whether the list of objects returned
+  by Amazon's API is >= 999. list_objects is limited to 999,
+  as such, when this many objects are returned, we assume there are more
+  in the bucket. As such, whenever we're queried for amount of images,
+  we'll return 999 if the list list_objects returned 999, even if there
+  are currently less objects in the ImageServer.
 
   The servers updates the state once every
     `Application.fetch_env!(:image_tagger, :update_interval_seconds)
@@ -42,7 +49,11 @@ defmodule ImageTagger.ImageServer do
 
   @doc """
   Fetches the keys of all the images currently in the review folder,
-  meaning all images that are yet to be reviewed.
+  meaning all images that are yet to be reviewed. This is returned as a tuple,
+  where the first element indicates whether the list of images is truncated.
+
+  Returns:
+    {is_truncated, images}
   """
   def fetch_images() do
     bucket_name = Application.fetch_env!(:image_tagger, :bucket_name)
@@ -53,12 +64,19 @@ defmodule ImageTagger.ImageServer do
       |> ExAws.S3.list_objects(prefix: image_folder)
       |> ExAws.request()
 
+    is_truncated = res
+      |> Map.get(:body)
+      |> Map.get(:is_truncated)
+      |> String.to_atom()
+
     # filter out folders and return a list of the keys
-    res
-    |> Map.get(:body)
-    |> Map.get(:contents)
-    |> Enum.filter(&(&1.size != "0"))
-    |> Enum.map(& &1.key)
+    images = res
+      |> Map.get(:body)
+      |> Map.get(:contents)
+      |> Enum.filter(&(&1.size != "0"))
+      |> Enum.map(& &1.key)
+
+    {is_truncated, images}
   end
 
   @doc """
@@ -67,9 +85,10 @@ defmodule ImageTagger.ImageServer do
   ReviewServer.
   """
   def fetch_new_state() do
-    images = fetch_images()
+    {is_truncated, images} = fetch_images()
     under_review = ReviewServer.get_images()
-    MapSet.difference(MapSet.new(images), MapSet.new(under_review))
+    filtered_images = MapSet.difference(MapSet.new(images), MapSet.new(under_review))
+    {is_truncated, images}
   end
 
   @doc """
