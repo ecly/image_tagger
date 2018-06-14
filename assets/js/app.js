@@ -35,7 +35,7 @@ class App {
     var $overlay = $("#overlay_image")
     var $good_button = $("#good")
     var $bad_button = $("#bad")
-    var $force_button = $("#force")
+    var $next_button = $("#next")
     var $images_left = $("#images_left")
     var $reviewed_count = $("#reviewed_count")
     var $online = $("#online")
@@ -83,12 +83,15 @@ class App {
     $(document).keydown(function(e) {
       console.log(e.keyCode)
       if (e.keyCode == 38 || e.keyCode == 75) { //up arrow or h
-        review("good");
+        $good_button.click();
       } else if (e.keyCode == 40 || e.keyCode == 74) { // down arrow or j
-        review("bad");
+        $bad_button.click();
       } else if (e.keyCode == 39 || e.keyCode == 78) { // right arrow  or n
-        poll_image();
+        $next_button.click();
+      } else {
+        return true;
       }
+      return false;
     })
 
     var hide_overlay = function() {
@@ -114,7 +117,7 @@ class App {
       review("bad");
     });
 
-    $force_button.click(function() { poll_image(); });
+    $next_button.click(function() { poll_image(); });
 
     poll_image();
   }

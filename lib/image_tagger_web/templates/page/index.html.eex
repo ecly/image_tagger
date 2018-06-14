@@ -24,7 +24,7 @@
   </div>
 
   <div style="position:fixed;bottom:5px;right:5px;">
-    <button type="button" id="force">Next</button>
+    <button type="button" id="next">Next</button>
     <label for="auto_poll">Auto next:</label>
     <input type="checkbox" id="auto_next" checked></input>
   </div>
