@@ -33,9 +33,9 @@ defmodule ImageTagger.ImageServer do
 
   @doc false
   def init(:ok) do
-    images = fetch_images()
+    state = fetch_state()
     schedule_update()
-    {:ok, MapSet.new(images)}
+    {:ok, state}
   end
 
   @doc """
@@ -55,7 +55,7 @@ defmodule ImageTagger.ImageServer do
   Returns:
     {is_truncated, images}
   """
-  def fetch_images() do
+  def fetch_state() do
     bucket_name = Application.fetch_env!(:image_tagger, :bucket_name)
     image_folder = Application.fetch_env!(:image_tagger, :image_folder)
 
@@ -76,7 +76,7 @@ defmodule ImageTagger.ImageServer do
       |> Enum.filter(&(&1.size != "0"))
       |> Enum.map(& &1.key)
 
-    {is_truncated, images}
+    {is_truncated, MapSet.new(images)}
   end
 
   @doc """
@@ -84,11 +84,11 @@ defmodule ImageTagger.ImageServer do
   and subtracts all the images that are currently being reviewed by the
   ReviewServer.
   """
-  def fetch_new_state() do
-    {is_truncated, images} = fetch_images()
+  def fetch_updated_state() do
+    {is_truncated, images} = fetch_state()
     under_review = ReviewServer.get_images()
-    filtered_images = MapSet.difference(MapSet.new(images), MapSet.new(under_review))
-    {is_truncated, images}
+    filtered_images = MapSet.difference(images, MapSet.new(under_review))
+    {is_truncated, filtered_images}
   end
 
   @doc """
@@ -99,8 +99,7 @@ defmodule ImageTagger.ImageServer do
   Additionally schedules a new update after the configured amount of seconds.
   """
   def handle_info(:update_state, _state) do
-    # IO.inspect(_state, label: "image server state")
-    updated_state = fetch_new_state()
+    updated_state = fetch_updated_state()
     schedule_update()
     {:noreply, updated_state}
   end
@@ -111,11 +110,11 @@ defmodule ImageTagger.ImageServer do
 
   Returns: {:ok, image} || {:error, reason}
   """
-  def handle_call(:poll_image, _from, state) do
-    if MapSet.size(state) > 0 do
-      image = Enum.random(state)
-      new_state = MapSet.delete(state, image)
-      {:reply, {:ok, image}, new_state}
+  def handle_call(:poll_image, _from, {is_truncated, images} = state) do
+    if MapSet.size(images) > 0 do
+      image = Enum.random(images)
+      new_images = MapSet.delete(images, image)
+      {:reply, {:ok, image}, {is_truncated, new_images}}
     else
       {:reply, {:error, "No images left to review"}, state}
     end
@@ -124,15 +123,19 @@ defmodule ImageTagger.ImageServer do
   @doc """
   Returns the size of the state.
   """
-  def handle_call(:get_count, _from, state) do
-    {:reply, MapSet.size(state), state}
+  def handle_call(:get_count, _from, {is_truncated, images} = state) do
+    if is_truncated do
+      {:reply, 999, state}
+    else
+      {:reply, MapSet.size(images), state}
+    end
   end
 
   @doc """
   Returns the size of the state.
   """
-  def handle_call({:add_image, image}, _from, state) do
-    {:reply, :ok, MapSet.put(state, image)}
+  def handle_call({:add_image, image}, _from, {is_truncated, images}) do
+    {:reply, :ok, {is_truncated, MapSet.put(images, image)}}
   end
 
   @doc """
