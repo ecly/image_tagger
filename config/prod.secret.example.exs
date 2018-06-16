@@ -17,6 +17,12 @@ config :ex_aws,
 
 config :image_tagger, update_interval_seconds: 1
 config :image_tagger, bucket_name: "bucket"
+
 config :image_tagger, image_folder: "to_review"
-config :image_tagger, bad_folder: "bad"
-config :image_tagger, good_folder: "good"
+
+# Various tags. The tag should atom should correspond
+# to the atom represention of the 'tag' that the front-end
+# pushes through the channel when the reviewer submits a review.
+# Can be arbitrarily many tags.
+config :image_tagger, bad: "bad"
+config :image_tagger, good: "good"

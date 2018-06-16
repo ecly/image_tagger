@@ -37,20 +37,14 @@ defmodule ImageTagger.ReviewServer do
   end
 
   @doc """
-  Archives the given image, copying it to the 'bad' folder.
+  Archives the given image, copying it to the folder associated
+  with the given tag.
   """
-  def archive_image(image, :good) do
-    folder = Application.fetch_env!(:image_tagger, :good_folder)
+  def archive_image(image, tag) when is_atom(tag) do
+    folder = Application.fetch_env!(:image_tagger, tag)
     move_image_to_folder(image, folder)
   end
 
-  @doc """
-  Archives the given image, copying it to the 'good' folder.
-  """
-  def archive_image(image, :bad) do
-    folder = Application.fetch_env!(:image_tagger, :bad_folder)
-    move_image_to_folder(image, folder)
-  end
 
   @doc """
   Adds an image to the ReviewServer signifying that it
