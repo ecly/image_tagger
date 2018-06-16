@@ -36,6 +36,7 @@ class App {
     var $good_button = $("#good")
     var $bad_button = $("#bad")
     var $next_button = $("#next")
+    var $undo_button = $("#undo")
     var $images_left = $("#images_left")
     var $reviewed_count = $("#reviewed_count")
     var $online = $("#online")
@@ -43,6 +44,7 @@ class App {
     var $overlay_image = $("#overlay_image")
     var good_overlay_image = "images/good_overlay.png"
     var bad_overlay_image = "images/banned_overlay.png"
+    var undo_overlay_image = "images/undo_overlay.png"
 
     socket.onOpen( ev => console.log("SOCKET OPEN", ev) )
     socket.onError( ev => console.log("SOCKET ERROR", ev) )
@@ -70,10 +72,15 @@ class App {
       $reviewed_count.text(value);
     }
 
+    var decrement_reviewed = function() {
+      var current = parseInt($reviewed_count.text(), 10);
+      var new_value = current <= 0 ? 0 : current - 1;
+      $reviewed_count.text(new_value);
+    }
+
     var review = function(rating) {
       var poll_next =  $('#auto_next').is(":checked")
       chan.push("submit_review", {review:rating, auto_next:poll_next});
-      increment_reviewed();
     }
 
     var poll_image= function() {
@@ -88,6 +95,8 @@ class App {
         $bad_button.click();
       } else if (e.keyCode == 39 || e.keyCode == 78) { // right arrow  or n
         $next_button.click();
+      } else if (e.keyCode == 37 || e.keyCode == 85) { // left arrow  or u
+        $undo_button.click();
       } else {
         return true;
       }
@@ -110,11 +119,19 @@ class App {
     $good_button.click(function() {
       show_overlay_image(good_overlay_image);
       review("good");
+      increment_reviewed();
     });
 
     $bad_button.click(function() {
       show_overlay_image(bad_overlay_image);
       review("bad");
+      increment_reviewed();
+    });
+
+    $undo_button.click(function() {
+      show_overlay_image(undo_overlay_image);
+      chan.push("undo", {})
+      decrement_reviewed();
     });
 
     $next_button.click(function() { poll_image(); });

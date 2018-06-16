@@ -28,24 +28,35 @@ defmodule ImageTaggerWeb.ReviewerChannel do
     {:noreply, socket}
   end
 
+
+  defp push_image_url_to_socket(socket, url) do
+    count = ImageTagger.images_left()
+    online = ImageTagger.reviewers_online()
+    msg = %{"url" => url, "count" => count, "online" => online}
+    push(socket, @new_image_event, msg)
+  end
+
   # Pushes an image associated with the given socket if one is available
   # in the ImageServer. Otherwise does nothing.
   defp try_push_image_to_socket(socket) do
     case ImageTagger.fetch_image_to_review(socket.assigns.id) do
-      {:ok, url} ->
-        count = ImageTagger.images_left()
-        online = ImageTagger.reviewers_online()
-        response = %{"url" => url, "count" => count, "online" => online}
-        push(socket, @new_image_event, response)
-
-      _otherwise ->
-        {:noreply, socket}
+      {:ok, url} -> push_image_url_to_socket(socket, url)
+      _otherwise -> nil
     end
   end
 
   @doc false
   def handle_in("poll_image", _msg, socket) do
     try_push_image_to_socket(socket)
+    {:noreply, socket}
+  end
+
+  @doc false
+  def handle_in("undo", _msg, socket) do
+    case ImageTagger.undo_last_review(socket.assigns.id) do
+      {:ok, url} -> push_image_url_to_socket(socket, url)
+      _otherwise -> nil
+    end
     {:noreply, socket}
   end
 
