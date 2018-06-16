@@ -5,10 +5,12 @@
         <img id="overlay_image" src=""/>
       </div>
     </div>
-    </br><hr>
-    <div id="buttons">
-      <input class="button" type="image" id="bad" src="images/bad_button.jpg">
-      <input class="button" type="image" id="good" src="images/good_button.png">
+    <hr>
+    <div id="tag_buttons">
+      <input class="tag_buttons" type="image" id="bad" src="images/bad_button.jpg">
+      <input class="tag_buttons" type="image" id="good" src="images/good_button.png">
+      <br>
+      <input class="button" type="image" id="undo" src="images/undo_button.png">
     </div>
     <br>
 
@@ -17,10 +19,11 @@
     <br>
   </div>
 
-  <div style="position:fixed;top:5px;right:5px;">
-    <span>Emoji, up or h for non-cheat images</span><br>
-    <span>Hammer, down or j for cheat images</span><br>
+  <div style="position:fixed;top:5px;right:5px;text-align:right">
+    <span>Emoji, up or h for non-cheat image</span><br>
+    <span>Hammer, down or j for cheat image</span><br>
     <span>Next, right or n for next image</span><br>
+    <span>Undo, left or u for previous image</span><br>
   </div>
 
   <div style="position:fixed;bottom:5px;right:5px;">
@@ -29,7 +32,7 @@
     <input type="checkbox" id="auto_next" checked></input>
   </div>
 
-  <div style="position:fixed;bottom:5px;left:5px;">
+  <div style="position:fixed;bottom:5px;left:5px;text-align:left">
     <label for="online">Reviewers online:</label>
     <b><span id="online">1</span></b>
     <br>

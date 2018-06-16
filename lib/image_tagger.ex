@@ -49,6 +49,26 @@ defmodule ImageTagger do
   end
 
   @doc """
+  Undoes the last review associated with the given reviewer.
+  A result tuple is returned contanining a presigned_url of the
+  image for which the tag was undone if any reviews are in the history
+  of the given reviwer, otherwise an error is returned.
+
+  ## Examples
+  iex> ImageTagger.undo_last_review("reviewer_id")
+  {:ok, "www.s3.amazon.com/some_key/some_image.png"}
+  iex> ImageTagger.undo_last_review("reviewer_id")
+  {:error, "no images in history for given reviewer"}
+  """
+  def undo_last_review(reviewer) do
+    case ReviewServer.undo_last_review(reviewer) do
+      {:ok, image} -> get_public_url(image)
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+
+  @doc """
   Fetches an image to review for the given reviewer.
   The image is polled from the ImageServer and added
   to the Review Server.

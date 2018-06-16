@@ -15,9 +15,10 @@ config :ex_aws,
   access_key_id: ["", :instance_role],
   secret_access_key: ["", :instance_role]
 
+# The amount of reviews we allow the user to undo at most.
+config :image_tagger, history_size: 5
 config :image_tagger, update_interval_seconds: 1
 config :image_tagger, bucket_name: "bucket"
-
 config :image_tagger, image_folder: "to_review"
 
 # Various tags. The tag should atom should correspond

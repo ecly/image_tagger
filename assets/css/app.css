@@ -7,17 +7,28 @@ label {
     font-weight:normal;
 }
 
+#body {
+    text-align: center;
+}
+
+.tag_buttons {
+    border-style: solid;
+    border-width: 1px;
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 10vh;
+}
+
 #buttons {
     display: table;
     margin: 0 auto;
     position: relative;
 }
 
-.button {
-    height: 100px;
-    border-style: solid;
-    border-width: 1px;
-    margin: 10px;
+#undo {
+    height: 10vh;
+    margin-top: 10px;
+    position: relative;
 }
 
 #images {
