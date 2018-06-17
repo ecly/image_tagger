@@ -7,3 +7,8 @@ Currently reviewed images are kept in a `ReviewServer` that the `ImageServer` sy
 Presigned URLs are used for serving the images to the frontend.
 
 See [config/prod.secret.example.exs](config/prod.secret.example.exs) for configuration details.
+
+---
+
+The entire front-end is just hacked wildly together as a meme, but should be easily replaceable.
+Same goes for the entire web portion of the Phoenix application.
