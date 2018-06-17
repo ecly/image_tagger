@@ -83,7 +83,7 @@ defmodule ImageTagger.ReviewServer do
       nil ->
         {:reply, :ok, state}
 
-      {nil, history} ->
+      {nil, _history} ->
         {:reply, :ok, state}
 
       {current, history} ->

@@ -8,10 +8,15 @@ defmodule ImageTaggerWeb.ReviewerChannel do
   @new_image_event "new_image"
 
   @doc false
-  def join("reviewers:" <> id, _message, socket) do
-    socket = assign(socket, :id, id)
-    send(self(), :after_join)
-    {:ok, socket}
+  def join("reviewers:" <> id, %{"password" => password}, socket) do
+    IO.inspect(password, label: "password")
+    if password == Application.fetch_env!(:image_tagger, :password) do
+      socket = assign(socket, :id, id)
+      send(self(), :after_join)
+      {:ok, socket}
+    else
+      {:error, %{reason: "unauthorized"}}
+    end
   end
 
   @doc """

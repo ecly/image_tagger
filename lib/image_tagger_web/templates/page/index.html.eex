@@ -1,18 +1,35 @@
-<div id="body">
-    <div id="images">
-      <img id="image" src="">
-      <div id="overlay">
-        <img id="overlay_image" src=""/>
-      </div>
+<div id="login_body">
+  <img id="login_bg" src="images/wow_background.png" alt="">
+  <div id="login_input">
+    <label for="username">Best Warlock Name</label>
+    <input type="text" class="login_input" id="username" value="Lethly" disabled><br>
+    <label for="password">Password</label>
+    <input type="password" class="login_input" id="password" autofocus>
+    <br><br><br>
+    <input type="image" class="login_input" id="login_button" src="images/login_button.png">
+    <img id="login_error_image" src="images/nope.png"/>
+  </div>
+</div>
+
+<div id="review_body" style="display:none;">
+  <center>
+    <h1>Lethly's Deluxe Anti-Cheat System</h1>
+  </center>
+  <hr>
+  <div id="images">
+    <img id="image" src="">
+    <div id="overlay">
+      <img id="overlay_image" src=""/>
     </div>
-    <hr>
-    <div id="tag_buttons">
-      <input class="tag_buttons" type="image" id="bad" src="images/bad_button.jpg">
-      <input class="tag_buttons" type="image" id="good" src="images/good_button.png">
-      <br>
-      <input class="button" type="image" id="undo" src="images/undo_button.png">
-    </div>
+  </div>
+  <hr>
+  <div id="tag_buttons">
+    <input class="tag_buttons" type="image" id="bad" src="images/bad_button.jpg">
+    <input class="tag_buttons" type="image" id="good" src="images/good_button.png">
     <br>
+    <input class="button" type="image" id="undo" src="images/undo_button.png">
+  </div>
+  <br>
 
   <div style="position:fixed;top:5px;left:5px;">
     <input type="image" id="good" src="images/judge.jpg" height="250">
@@ -38,9 +55,9 @@
     <br>
     <label for="reviewed_count">Images reviewed this session:</label>
     <b><span id="reviewed_count">0</span><b>
-    <br>
-    <label for="images_left">Images left to review:</label>
-    <b><span id="images_left">0</span></b>
-  </div>
+        <br>
+        <label for="images_left">Images left to review:</label>
+        <b><span id="images_left">0</span></b>
+      </div>
 
-</div>
+    </div>
