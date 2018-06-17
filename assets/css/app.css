@@ -3,11 +3,65 @@ h1 {
     font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
 }
 
+html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
+}
+
+#login_error_image {
+    display: none;
+    position:absolute;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform:translate(-50%, -50%);
+}
+
+#login_body {
+    text-align: center;
+    margin: 0;
+    margin: 0;
+}
+
+#login_button {
+    width: 200px;
+}
+
+#login_bg{
+    min-height:100%;
+    min-width:100%;
+    height:auto;
+    width:auto;
+    position:absolute;
+    top:-100%; bottom:-100%;
+    left:-100%; right:-100%;
+    margin:auto;
+    z-index: 0;
+}
+
+#login_input{
+    position: absolute;
+    top: 50%;
+    left: 46%;
+    margin: 0 auto;
+    vertical-align: center;
+}
+
+.login_input{
+    z-index:1;
+    display: block;
+    margin: auto;
+    vertical-align:center;
+    background-color: rgba(0,0,0,0.3);
+}
+
+
 label {
     font-weight:normal;
 }
 
-#body {
+#review_body {
     text-align: center;
 }
 

@@ -16,6 +16,7 @@ config :ex_aws,
   secret_access_key: ["", :instance_role]
 
 # The amount of reviews we allow the user to undo at most.
+config :image_tagger, password: "password"
 config :image_tagger, history_size: 5
 config :image_tagger, update_interval_seconds: 1
 config :image_tagger, bucket_name: "bucket"
