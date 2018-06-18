@@ -43,6 +43,8 @@ defmodule ImageTagger.Mixfile do
       {:hackney, "~> 1.9"},
       {:cors_plug, "~> 1.3"},
       {:sweet_xml, "~> 0.6"},
+      {:edeliver, "~> 1.5.0"},
+      {:distillery, "~> 1.5"},
       {:credo, "~> 0.8.10", only: [:dev, :test], runtime: false}
     ]
   end
