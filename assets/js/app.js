@@ -77,7 +77,7 @@ class App {
       start_review(chan);
     })
 
-     $('#password').keyup(function(e) {
+     $('#password').keydown(function(e) {
        console.log(e.keyCode);
         if(e.keyCode == 13) {
             $login_button.click();
