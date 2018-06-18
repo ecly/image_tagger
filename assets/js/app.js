@@ -72,13 +72,12 @@ class App {
       chan.join()
         .receive( "error", () => show_login_error())
         .receive( "ok",    () => show_review())
-      chan.onError(e => show_login());
+      chan.onError(e => console.log(e));
       chan.onClose(e => show_login());
       start_review(chan);
     })
 
      $('#password').keydown(function(e) {
-       console.log(e.keyCode);
         if(e.keyCode == 13) {
             $login_button.click();
             return false;
