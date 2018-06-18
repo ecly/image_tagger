@@ -9,7 +9,6 @@ defmodule ImageTaggerWeb.ReviewerChannel do
 
   @doc false
   def join("reviewers:" <> id, %{"password" => password}, socket) do
-    IO.inspect(password, label: "password")
     if password == Application.fetch_env!(:image_tagger, :password) do
       socket = assign(socket, :id, id)
       send(self(), :after_join)
