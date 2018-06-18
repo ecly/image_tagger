@@ -23,12 +23,33 @@ pre_erlang_get_and_update_deps() {
 }
 
 pre_erlang_clean_compile() {
+    status "Installing NPM dependencies"
+    __sync_remote "  # runs the commands on the build host
+      [ -f ~/.profile ] && source ~/.profile # load profile
+      set -e # fail if any command fails
+
+      cd '$BUILD_AT/assets' # go to the build directory on the build host
+      npm install $SILENCE
+    "
+
+    status "Building static files"
+    __sync_remote "
+      [ -f ~/.profile ]
+      set -e
+
+      cd '$BUILD_AT/assets'
+      mkdir -p priv/static
+      npm run deploy $SILENCE
+    "
+
+
     status "Running phoenix.digest"
     __sync_remote "
       [ -f ~/.profile ] && source ~/.profile
       set -e
 
       cd '$BUILD_AT'
+      mkdir -p priv/static
       APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phoenix.digest $SILENCE
     "
 }
