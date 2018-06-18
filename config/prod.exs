@@ -17,7 +17,10 @@ config :image_tagger, ImageTaggerWeb.Endpoint,
   load_from_system_env: false,
   http: [port: 4000],
   check_origin: false,
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  server: true,
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  root: ".",
+  version: Application.spec(:image_tagger, :vsn)
 
 # Do not print debug messages in production
 config :logger, level: :info
