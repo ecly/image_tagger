@@ -53,7 +53,7 @@ class App {
 
     var show_login_error = function(socket) {
       $login_error.show()
-      setTimeout(hide_login_error, 2000);
+      setTimeout(hide_login_error, 1000);
     }
 
      var hide_overlay = function() {
@@ -87,6 +87,7 @@ class App {
     var start_review = function(chan){
       var $image = $("#image")
       var $good_button = $("#good")
+      var $maybe_button = $("#maybe")
       var $bad_button = $("#bad")
       var $next_button = $("#next")
       var $undo_button = $("#undo")
@@ -96,6 +97,8 @@ class App {
       var $overlay = $("#overlay")
       var $overlay_image = $("#overlay_image")
       var good_overlay_image = "images/good_overlay.png"
+      var maybe_overlay_image = "images/maybe_button.png"
+      var next_overlay_image = "images/next_overlay.png"
       var bad_overlay_image = "images/banned_overlay.png"
       var undo_overlay_image = "images/undo_overlay.png"
 
@@ -135,10 +138,12 @@ class App {
           $good_button.click();
         } else if (e.keyCode == 40 || e.keyCode == 74) { // down arrow or j
           $bad_button.click();
-        } else if (e.keyCode == 39 || e.keyCode == 78) { // right arrow  or n
-          $next_button.click();
+        } else if (e.keyCode == 39 || e.keyCode == 77) { // right arrow  or m
+          $maybe_button.click();
         } else if (e.keyCode == 37 || e.keyCode == 85) { // left arrow  or u
           $undo_button.click();
+        } else if (e.keyCode == 13 || e.keyCode == 78) { // enter or n
+          $next_button.click();
         } else {
           return true;
         }
@@ -149,13 +154,13 @@ class App {
         $overlay.hide();
         $overlay_image.attr("src", "");
       }
+
       var show_overlay_image = function(image) {
         $overlay_image.attr("src", image);
         $("#overlay").show();
-        setTimeout(hide_overlay, 500);
       }
 
-      // we also want to hide overlay when next image has loaded
+      // we hide the overlay when next image has loaded
       image.addEventListener('load', hide_overlay)
 
       $good_button.click(function() {
@@ -170,13 +175,22 @@ class App {
         increment_reviewed();
       });
 
+      $maybe_button.click(function() {
+        show_overlay_image(maybe_overlay_image);
+        review("maybe");
+        increment_reviewed();
+      });
+
       $undo_button.click(function() {
         show_overlay_image(undo_overlay_image);
         chan.push("undo", {})
         decrement_reviewed();
       });
 
-      $next_button.click(function() { poll_image(); });
+      $next_button.click(function() {
+        show_overlay_image(next_overlay_image);
+        poll_image();
+      });
 
       poll_image();
     }

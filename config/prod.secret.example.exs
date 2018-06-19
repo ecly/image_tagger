@@ -26,5 +26,6 @@ config :image_tagger, image_folder: "to_review"
 # to the atom represention of the 'tag' that the front-end
 # pushes through the channel when the reviewer submits a review.
 # Can be arbitrarily many tags.
-config :image_tagger, bad: "bad"
-config :image_tagger, good: "good"
+config :image_tagger, bad: "bad_folder"
+config :image_tagger, maybe: "maybe_folder"
+config :image_tagger, good: "good_folder"

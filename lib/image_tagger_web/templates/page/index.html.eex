@@ -25,6 +25,7 @@
   <hr>
   <div id="tag_buttons">
     <input class="tag_buttons" type="image" id="bad" src="images/bad_button.jpg">
+    <input class="tag_buttons" type="image" id="maybe" src="images/maybe_button.png">
     <input class="tag_buttons" type="image" id="good" src="images/good_button.png">
     <br>
     <input class="button" type="image" id="undo" src="images/undo_button.png">
@@ -37,10 +38,11 @@
   </div>
 
   <div style="position:fixed;top:5px;right:5px;text-align:right">
-    <span>Emoji, up or h for non-cheat image</span><br>
-    <span>Hammer, down or j for cheat image</span><br>
-    <span>Next, right or n for next image</span><br>
-    <span>Undo, left or u for previous image</span><br>
+    <span>Thumbs-up Emoji, up or h for non-cheat</span><br>
+    <span>Ban-hammer, down or j for cheat</span><br>
+    <span>Thinking emoji, right or m for maybe-cheat</span><br>
+    <span>Undo-button, left or u for previous</span><br>
+    <span>Next-button, enter or n to skip</span><br>
   </div>
 
   <div style="position:fixed;bottom:5px;right:5px;">
