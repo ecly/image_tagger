@@ -15,11 +15,11 @@ defmodule ImageTagger.Application do
       supervisor(ImageTaggerWeb.Endpoint, []),
       supervisor(ImageTaggerWeb.Presence.Supervisor, []),
       supervisor(ImageTaggerWeb.Presence, []),
-      worker(ImageServer, []),
       worker(ReviewServer, [])
       # Start your own worker by calling: ImageTagger.Worker.start_link(arg1, arg2, arg3)
       # worker(ImageTagger.Worker, [arg1, arg2, arg3]),
     ]
+    children = if Mix.env() == :test, do: children, else: children ++ [worker(ImageServer, [])]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
