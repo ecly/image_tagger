@@ -9,6 +9,7 @@ defmodule ImageTagger.ReviewServer do
   """
   alias ExAws
   alias ImageTagger.ImageServer
+  alias ImageTagger.Reviewer
   use GenServer
 
   @doc """
@@ -54,17 +55,16 @@ defmodule ImageTagger.ReviewServer do
 
   Returns :ok
   """
-  def handle_call({:add_image, reviewer, image}, _from, state) do
-    if Map.has_key?(state, reviewer) do
-      {current, history} = state[reviewer]
+  def handle_call({:add_image, reviewer_id, image}, _from, state) do
+    if Map.has_key?(state, reviewer_id) do
+      %Reviewer{current: current} = state[reviewer_id]
 
       if current != nil do
         :ok = ImageServer.add_image(current)
       end
-
-      {:reply, :ok, Map.put(state, reviewer, {image, history})}
+      {:reply, :ok, put_in(state[reviewer_id].current, image)}
     else
-      {:reply, :ok, Map.put(state, reviewer, {image, []})}
+      {:reply, :ok, Map.put(state, reviewer_id, %Reviewer{id: reviewer_id, current: image})}
     end
   end
 
@@ -78,29 +78,29 @@ defmodule ImageTagger.ReviewServer do
 
   Returns: :ok
   """
-  def handle_call({:review_image, reviewer, tag}, _from, state) do
-    case Map.get(state, reviewer) do
+  def handle_call({:review_image, reviewer_id, tag}, _from, state) do
+    case state[reviewer_id] do
       nil ->
         {:reply, :ok, state}
 
-      {nil, _history} ->
+      # If the given reviewer is associated with no image, do nothing
+      %Reviewer{current: nil} ->
         {:reply, :ok, state}
 
-      {current, history} ->
+      %Reviewer{current: current, history: history} = reviewer ->
         max_history = Application.fetch_env!(:image_tagger, :history_size)
 
         review = {current, tag}
 
-        # If history exceeds max_history, we archive the oldest image
-        # in the history.
+        # If history exceeds max_history, we archive the oldest image in the history.
         if length(history) >= max_history do
-          [{oldest_img, oldest_tag} | rest] = history
+          [{oldest_img, oldest_tag} | tail] = history
           archive_image(oldest_img, oldest_tag)
-          new_reviewer_value = {nil, rest ++ [review]}
-          {:reply, :ok, Map.put(state, reviewer, new_reviewer_value)}
+          new_reviewer = %Reviewer{reviewer | current: nil, history: tail ++ [review]}
+          {:reply, :ok, put_in(state[reviewer_id], new_reviewer)}
         else
-          new_reviewer_value = {nil, history ++ [review]}
-          {:reply, :ok, Map.put(state, reviewer, new_reviewer_value)}
+          new_reviewer = %Reviewer{reviewer | current: nil, history: history ++ [review]}
+          {:reply, :ok, put_in(state[reviewer_id], new_reviewer)}
         end
     end
   end
@@ -138,22 +138,23 @@ defmodule ImageTagger.ReviewServer do
   associated with the currently connected reviewers. This includes
   both the image currently being reviewed by each reviewer and their history.
   """
-  def handle_call({:undo_last_review, reviewer}, _from, state) do
-    case Map.get(state, reviewer) do
+  def handle_call({:undo_last_review, reviewer_id}, _from, state) do
+    case state[reviewer_id] do
       nil ->
         {:reply, {:error, "no reviewer with given id"}, state}
 
-      {_, []} ->
+      %Reviewer{history: []} ->
         {:reply, {:error, "no images in history for the given reviewer"}, state}
 
-      {current, history} ->
+      %Reviewer{current: current, history: history} = reviewer ->
         if current != nil do
           :ok = ImageServer.add_image(current)
         end
 
         {undone_img, _tag} = List.last(history)
         new_history = Enum.drop(history, -1)
-        new_state = Map.put(state, reviewer, {undone_img, new_history})
+        new_reviewer = %Reviewer{reviewer | current: undone_img, history: new_history}
+        new_state = put_in(state[reviewer_id], new_reviewer)
         {:reply, {:ok, undone_img}, new_state}
     end
   end
@@ -163,9 +164,9 @@ defmodule ImageTagger.ReviewServer do
   If the reviewer is associated with an image,
   that image is added back into the ImageServer.
   """
-  def handle_cast({:remove_reviewer, reviewer}, state) do
-    if Map.has_key?(state, reviewer) do
-      {current, history} = state[reviewer]
+  def handle_cast({:remove_reviewer, reviewer_id}, state) do
+    if Map.has_key?(state, reviewer_id) do
+      %Reviewer{current: current, history: history} = state[reviewer_id]
 
       if current != nil do
         :ok = ImageServer.add_image(current)
@@ -174,7 +175,7 @@ defmodule ImageTagger.ReviewServer do
       Enum.each(history, fn {img, tag} -> archive_image(img, tag) end)
     end
 
-    {:noreply, Map.delete(state, reviewer)}
+    {:noreply, Map.delete(state, reviewer_id)}
   end
 
   @doc """
