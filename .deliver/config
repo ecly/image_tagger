@@ -2,10 +2,10 @@ APP="image_tagger"
 AUTO_VERSION=git-revision+git-branch-unless-master
 
 BUILD_AT="/home/worker/Builds/image_tagger"
-BUILD_HOST="server-lan"
+BUILD_HOST="image-tagger"
 BUILD_USER="worker"
 
-PRODUCTION_HOSTS="server-lan"
+PRODUCTION_HOSTS="image-tagger"
 PRODUCTION_USER="worker"
 
 DELIVER_TO="/home/worker/Releases/"
@@ -15,7 +15,7 @@ pre_erlang_get_and_update_deps() {
   # copy it on the build host to the build directory when building
   status "Copying secret files to build dir"
   if [ "$TARGET_MIX_ENV" = "prod" ]; then
-    local _secret_config="/home/worker/Builds/.secret/image_tagger"
+    local _secret_config="/home/worker/secret/image_tagger"
     __sync_remote " # execute on build host
       cp $_secret_config $BUILD_AT/config/prod.secret.exs
     "
