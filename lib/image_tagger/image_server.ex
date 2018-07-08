@@ -18,6 +18,8 @@ defmodule ImageTagger.ImageServer do
   alias ImageTagger.ReviewServer
   use GenServer
 
+  @image_client Application.fetch_env!(:image_tagger, :image_client)
+
   @doc """
   Starts the ImageServer as a singleton registered
   with the name of the module.
@@ -33,7 +35,7 @@ defmodule ImageTagger.ImageServer do
 
   @doc false
   def init(:ok) do
-    state = fetch_state()
+    state = @image_client.fetch_images()
     schedule_update()
     {:ok, state}
   end
@@ -47,45 +49,13 @@ defmodule ImageTagger.ImageServer do
     Process.send_after(self(), :update_state, seconds)
   end
 
-  @doc """
-  Fetches the keys of all the images currently in the review folder,
-  meaning all images that are yet to be reviewed. This is returned as a tuple,
-  where the first element indicates whether the list of images is truncated.
-
-  Returns:
-    {is_truncated, images}
-  """
-  def fetch_state() do
-    bucket_name = Application.fetch_env!(:image_tagger, :bucket_name)
-    image_folder = Application.fetch_env!(:image_tagger, :image_folder)
-
-    {:ok, res} =
-      bucket_name
-      |> ExAws.S3.list_objects(prefix: image_folder)
-      |> ExAws.request()
-
-    is_truncated = res
-      |> Map.get(:body)
-      |> Map.get(:is_truncated)
-      |> String.to_atom()
-
-    # filter out folders and return a list of the keys
-    images = res
-      |> Map.get(:body)
-      |> Map.get(:contents)
-      |> Enum.filter(&(&1.size != "0"))
-      |> Enum.map(& &1.key)
-
-    {is_truncated, MapSet.new(images)}
-  end
-
-  @doc """
+    @doc """
   Get all the images that are currently in the review folder,
   and subtracts all the images that are currently being reviewed by the
   ReviewServer.
   """
   def fetch_updated_state() do
-    {is_truncated, images} = fetch_state()
+    {is_truncated, images} = @image_client.fetch_images()
     under_review = ReviewServer.get_images()
     filtered_images = MapSet.difference(images, MapSet.new(under_review))
     {is_truncated, filtered_images}

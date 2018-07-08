@@ -8,6 +8,7 @@ config :image_tagger, ImageTaggerWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+config :image_tagger, image_client: ImageTagger.Images.TestClient
 
 # The amount of reviews we allow the user to undo at most.
 config :image_tagger, password: "password"
