@@ -109,6 +109,16 @@ defmodule ImageTagger.ImageServer do
   end
 
   @doc """
+  Discards the entire state of the ImageServer fetches a fresh state.
+  Used for testing.
+  """
+  def handle_call(:reset, _from, _state) do
+    state = @image_client.fetch_images()
+    {:reply, :ok, state}
+  end
+
+
+  @doc """
   Retrieves the current amount of images in the ImageServer.
 
   ## Examples
@@ -150,5 +160,14 @@ defmodule ImageTagger.ImageServer do
   """
   def poll_image() do
     GenServer.call(__MODULE__, :poll_image)
+  end
+
+  @doc """
+  Resets the state of the ImageServer discarind the current state and fetching an
+  entirely new one.
+  Intended for testing.
+  """
+  def reset() do
+    GenServer.call(__MODULE__, :reset)
   end
 end
