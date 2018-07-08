@@ -1,5 +1,13 @@
 defmodule ImageTagger.Images.S3Client do
+  @moduledoc """
+  An Image Client implementation for S3 interfacing.
+  URLs a created using presigned URLs.
+  Uses ExAws.
+  """
+
   @behaviour ImageTagger.Images.Behaviour
+
+  alias ExAws
 
   @doc """
   Fetches the keys of all the images currently in the review folder,
@@ -42,5 +50,15 @@ defmodule ImageTagger.Images.S3Client do
     image_dst = Path.join(folder, name)
     bucket |> ExAws.S3.put_object_copy(image_dst, bucket, image_src) |> ExAws.request()
     bucket |> ExAws.S3.delete_object(image_src) |> ExAws.request()
+  end
+
+
+  @doc """
+  Generate a public URL for an image
+  """
+  def get_url(image) do
+    config = ExAws.Config.new(:s3)
+    bucket = Application.fetch_env!(:image_tagger, :bucket_name)
+    ExAws.S3.presigned_url(config, :get, bucket, image)
   end
 end

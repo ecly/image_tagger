@@ -14,7 +14,6 @@ defmodule ImageTagger.ImageServer do
     `Application.fetch_env!(:image_tagger, :update_interval_seconds)
   seconds.
   """
-  alias ExAws
   alias ImageTagger.ReviewServer
   use GenServer
 

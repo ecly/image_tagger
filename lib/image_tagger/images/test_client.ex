@@ -1,4 +1,8 @@
 defmodule ImageTagger.Images.TestClient do
+  @moduledoc """
+  The image client used during testing.
+  """
+
   @behaviour ImageTagger.Images.Behaviour
 
   @doc """
@@ -16,4 +20,9 @@ defmodule ImageTagger.Images.TestClient do
   def move_image_to_folder("invalid_img", _folder), do: {:error, "Bad image path"}
   def move_image_to_folder(_image_src, "invalid_folder"), do: {:error, "Bad folder path"}
   def move_image_to_folder(_image_src, _folder), do: {:ok, "testing"}
+
+  @doc """
+  For testing, URLs created using the identity function.
+  """
+  def get_url(img), do: img
 end
