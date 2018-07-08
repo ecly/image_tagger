@@ -9,7 +9,8 @@ defmodule ImageTagger do
 
   alias ImageTagger.ImageServer
   alias ImageTagger.ReviewServer
-  alias ExAws
+
+  @image_client Application.fetch_env!(:image_tagger, :image_client)
 
   @doc """
   Adds a review for the image associated with the given reviewer.
@@ -41,13 +42,6 @@ defmodule ImageTagger do
     ReviewServer.get_count()
   end
 
-  # Generate a public URL for an image
-  defp get_public_url(image) do
-    config = ExAws.Config.new(:s3)
-    bucket = Application.fetch_env!(:image_tagger, :bucket_name)
-    ExAws.S3.presigned_url(config, :get, bucket, image)
-  end
-
   @doc """
   Undoes the last review associated with the given reviewer.
   A result tuple is returned contanining a presigned_url of the
@@ -61,10 +55,8 @@ defmodule ImageTagger do
   {:error, "no images in history for given reviewer"}
   """
   def undo_last_review(reviewer) do
-    case ReviewServer.undo_last_review(reviewer) do
-      {:ok, image} -> get_public_url(image)
-      {:error, reason} -> {:error, reason}
-    end
+    with {:ok, image} <- ReviewServer.undo_last_review(reviewer),
+    do: @image_client.get_url(image)
   end
 
 
@@ -77,13 +69,8 @@ defmodule ImageTagger do
   {:ok public_url} || {:error, error}
   """
   def fetch_image_to_review(reviewer) do
-    case ImageServer.poll_image() do
-      {:ok, image} ->
-        :ok = ReviewServer.add_image(reviewer, image)
-        get_public_url(image)
-
-      {:error, reason} ->
-        {:error, reason}
-    end
+    with {:ok, image} <- ImageServer.poll_image(),
+         :ok <- ReviewServer.add_image(reviewer, image),
+    do: @image_client.get_url(image)
   end
 end

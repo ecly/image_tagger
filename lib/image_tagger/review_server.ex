@@ -7,7 +7,6 @@ defmodule ImageTagger.ReviewServer do
   where current is the path to the image currently being reviewed,
   and history is a keyword list with the last X images of the form {image, tag}.
   """
-  alias ExAws
   alias ImageTagger.ImageServer
   alias ImageTagger.Reviewer
   use GenServer
