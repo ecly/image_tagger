@@ -9,7 +9,7 @@ defmodule ImageTagger.Images.TestClient do
   Always return a MapSet of 100 images without truncation during testing.
   """
   def fetch_images() do
-    images = Enum.map(1..100, &("image#{&1}"))
+    images = Enum.map(1..100, &"image#{&1}")
     {false, MapSet.new(images)}
   end
 

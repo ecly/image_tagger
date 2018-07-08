@@ -48,7 +48,7 @@ defmodule ImageTagger.ImageServer do
     Process.send_after(self(), :update_state, seconds)
   end
 
-    @doc """
+  @doc """
   Get all the images that are currently in the review folder,
   and subtracts all the images that are currently being reviewed by the
   ReviewServer.
@@ -115,7 +115,6 @@ defmodule ImageTagger.ImageServer do
     state = @image_client.fetch_images()
     {:reply, :ok, state}
   end
-
 
   @doc """
   Retrieves the current amount of images in the ImageServer.

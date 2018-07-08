@@ -50,7 +50,9 @@ defmodule ImageTagger.ReviewServerTest do
 
   test "undoing review for reviewer with no history returns error" do
     :ok = ReviewServer.add_image(@id, @image)
-    assert {:error, "no images in history for the given reviewer"} == ReviewServer.undo_last_review(@id)
+
+    assert {:error, "no images in history for the given reviewer"} ==
+             ReviewServer.undo_last_review(@id)
   end
 
   test "undoing history for non-existing reviewer returns error" do

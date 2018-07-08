@@ -1,10 +1,11 @@
 defmodule ImageTagger do
   @moduledoc """
-  ImageTagger keeps the contexts that define your domain
-  and business logic.
+  Contains functions providing easier interfacing with ImageServer
+  and ReviewServer. This takes care of moving images from ImageServer
+  into the ReviewServer when a Reviewer fetches a new image.
 
-  Contexts are also responsible for managing your data, regardless
-  if it comes from the database, an external API or others.
+  ImageServer and ReviewServer should generally not be acted on directly,
+  and should instead be accessed through this module wherever possible.
   """
 
   alias ImageTagger.ImageServer
@@ -15,9 +16,7 @@ defmodule ImageTagger do
   @doc """
   Adds a review for the image associated with the given reviewer.
   """
-  def review_image(reviewer, review) do
-    ReviewServer.review_image(reviewer, review)
-  end
+  def review_image(reviewer, review), do: ReviewServer.review_image(reviewer, review)
 
   @doc """
   Returns the current amount of images in the ImageServer
@@ -38,9 +37,7 @@ defmodule ImageTagger do
   5
 
   """
-  def reviewers_online() do
-    ReviewServer.get_count()
-  end
+  def reviewers_online(), do: ReviewServer.get_count()
 
   @doc """
   Undoes the last review associated with the given reviewer.
@@ -56,9 +53,8 @@ defmodule ImageTagger do
   """
   def undo_last_review(reviewer) do
     with {:ok, image} <- ReviewServer.undo_last_review(reviewer),
-    do: @image_client.get_url(image)
+         do: @image_client.get_url(image)
   end
-
 
   @doc """
   Fetches an image to review for the given reviewer.
@@ -71,6 +67,6 @@ defmodule ImageTagger do
   def fetch_image_to_review(reviewer) do
     with {:ok, image} <- ImageServer.poll_image(),
          :ok <- ReviewServer.add_image(reviewer, image),
-    do: @image_client.get_url(image)
+         do: @image_client.get_url(image)
   end
 end

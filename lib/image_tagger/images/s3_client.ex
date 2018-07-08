@@ -26,13 +26,15 @@ defmodule ImageTagger.Images.S3Client do
       |> ExAws.S3.list_objects(prefix: image_folder)
       |> ExAws.request()
 
-    is_truncated = res
+    is_truncated =
+      res
       |> Map.get(:body)
       |> Map.get(:is_truncated)
       |> String.to_atom()
 
     # filter out folders and return a list of the keys
-    images = res
+    images =
+      res
       |> Map.get(:body)
       |> Map.get(:contents)
       |> Enum.filter(&(&1.size != "0"))
@@ -51,7 +53,6 @@ defmodule ImageTagger.Images.S3Client do
     bucket |> ExAws.S3.put_object_copy(image_dst, bucket, image_src) |> ExAws.request()
     bucket |> ExAws.S3.delete_object(image_src) |> ExAws.request()
   end
-
 
   @doc """
   Generate a public URL for an image
