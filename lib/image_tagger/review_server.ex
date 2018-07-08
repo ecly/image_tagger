@@ -12,6 +12,8 @@ defmodule ImageTagger.ReviewServer do
   alias ImageTagger.Reviewer
   use GenServer
 
+  @image_client Application.fetch_env!(:image_tagger, :image_client)
+
   @doc """
   Starts the ImageServer as a singleton registered
   with the name of the module.
@@ -30,22 +32,13 @@ defmodule ImageTagger.ReviewServer do
     {:ok, %{}}
   end
 
-  # Moves the given image from src into the given folder.
-  defp move_image_to_folder(image_src, folder) do
-    bucket = Application.fetch_env!(:image_tagger, :bucket_name)
-    name = Path.basename(image_src)
-    image_dst = Path.join(folder, name)
-    bucket |> ExAws.S3.put_object_copy(image_dst, bucket, image_src) |> ExAws.request()
-    bucket |> ExAws.S3.delete_object(image_src) |> ExAws.request()
-  end
-
   @doc """
   Archives the given image, copying it to the folder associated
   with the given tag.
   """
   def archive_image(image, tag) when is_atom(tag) do
     folder = Application.fetch_env!(:image_tagger, tag)
-    move_image_to_folder(image, folder)
+    @image_client.move_image_to_folder(image, folder)
   end
 
   @doc """
@@ -164,7 +157,7 @@ defmodule ImageTagger.ReviewServer do
   If the reviewer is associated with an image,
   that image is added back into the ImageServer.
   """
-  def handle_cast({:remove_reviewer, reviewer_id}, state) do
+  def handle_call({:remove_reviewer, reviewer_id}, _from,  state) do
     if Map.has_key?(state, reviewer_id) do
       %Reviewer{current: current, history: history} = state[reviewer_id]
 
@@ -175,7 +168,7 @@ defmodule ImageTagger.ReviewServer do
       Enum.each(history, fn {img, tag} -> archive_image(img, tag) end)
     end
 
-    {:noreply, Map.delete(state, reviewer_id)}
+    {:reply, :ok, Map.delete(state, reviewer_id)}
   end
 
   @doc """
@@ -212,7 +205,7 @@ defmodule ImageTagger.ReviewServer do
   iex> ImageTagger.ReviewServer.remove_reviewer("reviewer_id")
   """
   def remove_reviewer(id) do
-    GenServer.cast(__MODULE__, {:remove_reviewer, id})
+    GenServer.call(__MODULE__, {:remove_reviewer, id})
   end
 
   @doc """

@@ -24,6 +24,7 @@ config :image_tagger, ImageTaggerWeb.Endpoint,
 
 # Do not print debug messages in production
 config :logger, level: :info
+config :image_tagger, image_client: ImageTagger.Images.S3Client
 
 # ## SSL Support
 #
