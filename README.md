@@ -1,12 +1,15 @@
 # ImageTagger
 
-Small application for distributing the work of tagging images into two categories among multiple concurrent users. Uses GenServers for synchronizing an `ImageServer` with a folder in an S3-bucket. Based on the reviewers review, it it then moved to another appropriate folder in the S3-bucket based on the review.
+Small application for distributing the work of tagging images into categories among multiple concurrent users. Uses GenServers for synchronizing an `ImageServer` with a folder in an S3-bucket. 
 
-Currently reviewed images are kept in a `ReviewServer` that the `ImageServer` synchronizes with to ensure that users are not served the same image.
+A [Behaviour](lib/image_tagger/images/images_behaviour.ex) with callbacks `move_image_to_folder/2`, `fetch_images/0` and `get_url/1` can be implemented to allow interfacing with a local folder structure or a different remote. 
 
-Presigned URLs are used for serving the images to the frontend.
+Based on a reviewer's tag, an image is moved to its  appropriate folder in S3-bucket based on the tag. 
+For configuration of tags, see: [config/prod.secret.example.exs](config/prod.secret.example.exs). For the provided S3-client, presigned URLs are used for `get_url/1`.
 
-See [config/prod.secret.example.exs](config/prod.secret.example.exs) for configuration details.
+The `ReviewServer` and `ImageServer` synchronize to ensure that users are not served the same image,
+and that images are not "lost" eg. in case a Reviewer disconnects or discards an image. Additionally, the `ReviewServer` keeps track of a configurable amount of "history", allowing Reviewers to undo their tags, in case they got something wrong.
+
 
 ---
 
