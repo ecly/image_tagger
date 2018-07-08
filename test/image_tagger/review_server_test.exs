@@ -7,7 +7,6 @@ defmodule ImageTagger.ReviewServerTest do
   @id "test_reviewer_id"
   @image "some_image_path"
 
-
   setup do
     ImageServer.reset()
     ReviewServer.reset()

@@ -86,7 +86,7 @@ defmodule ImageTagger.ImageServer do
       new_images = MapSet.delete(images, image)
       {:reply, {:ok, image}, {is_truncated, new_images}}
     else
-      {:reply, {:error, "No images left to review"}, state}
+      {:reply, {:error, "no images left to review"}, state}
     end
   end
 
