@@ -115,13 +115,13 @@ defmodule ImageTagger.ReviewServer do
     current_images =
       state
       |> Map.values()
-      |> Enum.map(&elem(&1, 0))
+      |> Enum.map(fn reviewer -> reviewer.current end)
       |> Enum.filter(&(&1 != nil))
 
     history_images =
       state
       |> Map.values()
-      |> Enum.flat_map(fn {_, history} -> Keyword.keys(history) end)
+      |> Enum.flat_map(fn reviewer -> Keyword.keys(reviewer.history) end)
 
     {:reply, current_images ++ history_images, state}
   end
@@ -172,6 +172,14 @@ defmodule ImageTagger.ReviewServer do
   end
 
   @doc """
+  Discards the entire state of the ReviewServer and sets the state
+  to be an empty Map. Used for testing.
+  """
+  def handle_call(:reset, _from, _state) do
+    {:reply, :ok, %{}}
+  end
+
+  @doc """
   Retrieves the current amount of images in the ImageServer.
 
   ## Examples
@@ -190,8 +198,8 @@ defmodule ImageTagger.ReviewServer do
 
   ## Examples
 
-  iex> ImageTagger.ReviewServer.get_count()
-  5
+  iex> ImageTagger.ReviewServer.get_images()
+  ["image1", "image2", "image3"]
   """
   def get_images() do
     GenServer.call(__MODULE__, :get_images)
@@ -253,5 +261,13 @@ defmodule ImageTagger.ReviewServer do
   """
   def add_image(reviewer, image) do
     GenServer.call(__MODULE__, {:add_image, reviewer, image})
+  end
+
+  @doc """
+  Resets the state of the ReviewServer removing all reviewers and images from it.
+  They are not added back into the ImageServer as this is intended for testing.
+  """
+  def reset() do
+    GenServer.call(__MODULE__, :reset)
   end
 end
