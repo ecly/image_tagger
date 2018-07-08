@@ -54,6 +54,7 @@ defmodule ImageTagger.ReviewServer do
       if current != nil do
         :ok = ImageServer.add_image(current)
       end
+
       {:reply, :ok, put_in(state[reviewer_id].current, image)}
     else
       {:reply, :ok, Map.put(state, reviewer_id, %Reviewer{id: reviewer_id, current: image})}
@@ -156,7 +157,7 @@ defmodule ImageTagger.ReviewServer do
   If the reviewer is associated with an image,
   that image is added back into the ImageServer.
   """
-  def handle_call({:remove_reviewer, reviewer_id}, _from,  state) do
+  def handle_call({:remove_reviewer, reviewer_id}, _from, state) do
     if Map.has_key?(state, reviewer_id) do
       %Reviewer{current: current, history: history} = state[reviewer_id]
 

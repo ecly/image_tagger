@@ -32,7 +32,6 @@ defmodule ImageTaggerWeb.ReviewerChannel do
     {:noreply, socket}
   end
 
-
   defp push_image_url_to_socket(socket, url) do
     count = ImageTagger.images_left()
     online = ImageTagger.reviewers_online()
@@ -61,6 +60,7 @@ defmodule ImageTaggerWeb.ReviewerChannel do
       {:ok, url} -> push_image_url_to_socket(socket, url)
       _otherwise -> nil
     end
+
     {:noreply, socket}
   end
 
